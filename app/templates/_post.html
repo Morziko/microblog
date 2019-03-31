@@ -1,0 +1,67 @@
+    <table class="table table-hover">
+        <tr>
+            <td width="70px">
+                <a href="{{ url_for('main.user', username=post.author.username) }}">
+                    <img src="{{ post.author.avatar(70) }}" />
+                </a>
+            </td>
+            <a href="{{ url_for('main.post', post=post.id) }}">
+            <td>
+                {% set user_link %}
+                    <span class="user_popup">
+                        <a href="{{ url_for('main.user', username=post.author.username) }}">
+                            {{ post.author.username }}
+                        </a>
+                    </span>
+                    <a href="{{ url_for('main.pdf_tex', post=post.id)}}" target="_blank" class="btn btn-primary btn-xs">pdf</a>
+                    
+                    {% if messageTrue == 1 %}
+                        <a href="{{ url_for('main.Show_message', post=post.id) }}" target="_blank" class="btn btn-primary btn-xs">Show</a>
+                    {% else %}
+                        <a href="{{ url_for('main.post', post=post.id) }}" target="_blank" class="btn btn-primary btn-xs">Show</a>
+                    {% endif %}
+                    {% if user == current_user %}
+                    	
+                    	<!-- 
+                    		<li><a href="{{ url_for('main.delete_post', post=post.id) }}" >{{ _('Delete') }}</a></li> 
+                    		<button action="{{ url_for('main.delete_post', post=post.id) }}" type="button" class="btn btn-danger pull-right">Delete post</button>
+                    	-->
+                    	<a href="{{ url_for('main.delete_post', post=post.id) }}" class="btn btn-danger pull-right">Delete</a>
+                    	
+                    {% endif %}
+                {% endset %}
+                {{ _('%(username)s said %(when)s',
+                    username=user_link, when=moment(post.timestamp).fromNow()) }}
+                
+                <br>
+                {% if 'abstract' in post.body.lower(): %}
+                    <span id="post{{ post.id }}">
+                            {% autoescape false %}
+                                {{ post.body[post.body.index('abstract') + 8: ] }}   
+                            {% endautoescape %}
+                    </span>  
+                {% else %}
+                    <span id="post{{ post.id }}">
+                        {% autoescape false %}
+                            {{ post.body[:len_post] }}...   
+                        {% endautoescape %}
+                   </span>
+                {% endif %}
+
+                {% if post.language and post.language != g.locale %}
+                <br><br>
+                <span id="translation{{ post.id }}">
+                    <a href="javascript:translate(
+                                '#post{{ post.id }}',
+                                '#translation{{ post.id }}',
+                                '{{ post.language }}',
+                                '{{ g.locale }}');">{{ _('Translate') }}</a>
+                </span>
+                {% endif %}
+
+
+                
+            </td>
+        </a>
+        </tr>
+    </table>

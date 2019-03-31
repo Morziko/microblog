@@ -1,0 +1,54 @@
+[2019-02-25T00:11:28,125][INFO ][o.e.e.NodeEnvironment    ] [TxsIJDE] using [1] data paths, mounts [[OS (C:)]], net usable_space [717.1gb], net total_space [929.9gb], types [NTFS]
+[2019-02-25T00:11:28,203][INFO ][o.e.e.NodeEnvironment    ] [TxsIJDE] heap size [1007.3mb], compressed ordinary object pointers [true]
+[2019-02-25T00:11:28,203][INFO ][o.e.n.Node               ] [TxsIJDE] node name derived from node ID [TxsIJDE5S1qNdvewJM0cFQ]; set [node.name] to override
+[2019-02-25T00:11:28,203][INFO ][o.e.n.Node               ] [TxsIJDE] version[6.6.1], pid[3940], build[default/zip/1fd8f69/2019-02-13T17:10:04.160291Z], OS[Windows 10/10.0/amd64], JVM[Oracle Corporation/Java HotSpot(TM) 64-Bit Server VM/1.8.0_161/25.161-b12]
+[2019-02-25T00:11:28,219][INFO ][o.e.n.Node               ] [TxsIJDE] JVM arguments [-Xms1g, -Xmx1g, -XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -Des.networkaddress.cache.ttl=60, -Des.networkaddress.cache.negative.ttl=10, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -XX:-OmitStackTraceInFastThrow, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dio.netty.recycler.maxCapacityPerThread=0, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Djava.io.tmpdir=C:\Users\YURA\AppData\Local\Temp\elasticsearch, -XX:+HeapDumpOnOutOfMemoryError, -XX:HeapDumpPath=data, -XX:ErrorFile=logs/hs_err_pid%p.log, -XX:+PrintGCDetails, -XX:+PrintGCDateStamps, -XX:+PrintTenuringDistribution, -XX:+PrintGCApplicationStoppedTime, -Xloggc:logs/gc.log, -XX:+UseGCLogFileRotation, -XX:NumberOfGCLogFiles=32, -XX:GCLogFileSize=64m, -Delasticsearch, -Des.path.home=C:\Users\YURA\eclipse-workspace\microblog\elasticsearch-6.6.1, -Des.path.conf=C:\Users\YURA\eclipse-workspace\microblog\elasticsearch-6.6.1\config, -Des.distribution.flavor=default, -Des.distribution.type=zip]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [aggs-matrix-stats]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [analysis-common]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [ingest-common]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [lang-expression]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [lang-mustache]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [lang-painless]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [mapper-extras]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [parent-join]
+[2019-02-25T00:12:04,761][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [percolator]
+[2019-02-25T00:12:04,776][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [rank-eval]
+[2019-02-25T00:12:04,776][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [reindex]
+[2019-02-25T00:12:04,839][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [repository-url]
+[2019-02-25T00:12:04,839][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [transport-netty4]
+[2019-02-25T00:12:04,839][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [tribe]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-ccr]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-core]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-deprecation]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-graph]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-ilm]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-logstash]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-ml]
+[2019-02-25T00:12:04,855][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-monitoring]
+[2019-02-25T00:12:04,870][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-rollup]
+[2019-02-25T00:12:04,870][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-security]
+[2019-02-25T00:12:04,886][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-sql]
+[2019-02-25T00:12:04,886][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-upgrade]
+[2019-02-25T00:12:04,886][INFO ][o.e.p.PluginsService     ] [TxsIJDE] loaded module [x-pack-watcher]
+[2019-02-25T00:12:04,886][INFO ][o.e.p.PluginsService     ] [TxsIJDE] no plugins loaded
+[2019-02-25T00:12:24,387][INFO ][o.e.x.s.a.s.FileRolesStore] [TxsIJDE] parsed [0] roles from file [C:\Users\YURA\eclipse-workspace\microblog\elasticsearch-6.6.1\config\roles.yml]
+[2019-02-25T00:12:26,809][INFO ][o.e.x.m.p.l.CppLogMessageHandler] [TxsIJDE] [controller/11008] [Main.cc@109] controller (64 bit): Version 6.6.1 (Build a033f1b9679cab) Copyright (c) 2019 Elasticsearch BV
+[2019-02-25T00:12:28,615][DEBUG][o.e.a.ActionModule       ] [TxsIJDE] Using REST wrapper from plugin org.elasticsearch.xpack.security.Security
+[2019-02-25T00:12:29,224][INFO ][o.e.d.DiscoveryModule    ] [TxsIJDE] using discovery type [zen] and host providers [settings]
+[2019-02-25T00:12:31,396][INFO ][o.e.n.Node               ] [TxsIJDE] initialized
+[2019-02-25T00:12:31,396][INFO ][o.e.n.Node               ] [TxsIJDE] starting ...
+[2019-02-25T00:12:36,279][INFO ][o.e.t.TransportService   ] [TxsIJDE] publish_address {127.0.0.1:9300}, bound_addresses {127.0.0.1:9300}, {[::1]:9300}
+[2019-02-25T00:12:39,560][INFO ][o.e.c.s.MasterService    ] [TxsIJDE] zen-disco-elected-as-master ([0] nodes joined), reason: new_master {TxsIJDE}{TxsIJDE5S1qNdvewJM0cFQ}{MIWE-G_kQNySqcJuLcg-xw}{127.0.0.1}{127.0.0.1:9300}{ml.machine_memory=4156866560, xpack.installed=true, ml.max_open_jobs=20, ml.enabled=true}
+[2019-02-25T00:12:39,576][INFO ][o.e.c.s.ClusterApplierService] [TxsIJDE] new_master {TxsIJDE}{TxsIJDE5S1qNdvewJM0cFQ}{MIWE-G_kQNySqcJuLcg-xw}{127.0.0.1}{127.0.0.1:9300}{ml.machine_memory=4156866560, xpack.installed=true, ml.max_open_jobs=20, ml.enabled=true}, reason: apply cluster state (from master [master {TxsIJDE}{TxsIJDE5S1qNdvewJM0cFQ}{MIWE-G_kQNySqcJuLcg-xw}{127.0.0.1}{127.0.0.1:9300}{ml.machine_memory=4156866560, xpack.installed=true, ml.max_open_jobs=20, ml.enabled=true} committed version [1] source [zen-disco-elected-as-master ([0] nodes joined)]])
+[2019-02-25T00:12:40,607][WARN ][o.e.x.s.a.s.m.NativeRoleMappingStore] [TxsIJDE] Failed to clear cache for realms [[]]
+[2019-02-25T00:12:40,732][INFO ][o.e.l.LicenseService     ] [TxsIJDE] license [2a8f4fd9-74f7-4fcf-8ef9-e5c27f50621c] mode [basic] - valid
+[2019-02-25T00:12:40,795][INFO ][o.e.g.GatewayService     ] [TxsIJDE] recovered [0] indices into cluster_state
+[2019-02-25T00:12:42,623][INFO ][o.e.h.n.Netty4HttpServerTransport] [TxsIJDE] publish_address {127.0.0.1:9200}, bound_addresses {127.0.0.1:9200}, {[::1]:9200}
+[2019-02-25T00:12:42,623][INFO ][o.e.n.Node               ] [TxsIJDE] started
+[2019-02-25T00:35:14,656][INFO ][o.e.n.Node               ] [TxsIJDE] stopping ...
+[2019-02-25T00:35:14,703][INFO ][o.e.x.w.WatcherService   ] [TxsIJDE] stopping watch service, reason [shutdown initiated]
+[2019-02-25T00:35:15,063][INFO ][o.e.x.m.p.l.CppLogMessageHandler] [TxsIJDE] [controller/11008] [Main.cc@148] Ml controller exiting
+[2019-02-25T00:35:15,063][INFO ][o.e.n.Node               ] [TxsIJDE] stopped
+[2019-02-25T00:35:15,078][INFO ][o.e.n.Node               ] [TxsIJDE] closing ...
+[2019-02-25T00:35:15,125][INFO ][o.e.n.Node               ] [TxsIJDE] closed
+[2019-02-25T00:35:15,125][INFO ][o.e.x.m.p.NativeController] [TxsIJDE] Native controller process has stopped - no new native processes can be started

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>{{ _('Followed') }}</h1>
+    {% for post in followeds %}
+        <table class="table table-hover">
+        <tr>
+            <td width="70px">
+                <a href="{{ url_for('main.user', username=post.username) }}">
+                    <img src="{{ post.avatar(70) }}" />
+                </a>
+            </td>
+            <td>
+                
+                    <span class="user_popup">
+                        <a href="{{ url_for('main.user', username=post.username) }}">
+                            {{ post.username }}
+                        </a>
+                    </span>
+                
+            </td>
+        </tr>
+    </table>
+    {% endfor %}
+{% endblock %}

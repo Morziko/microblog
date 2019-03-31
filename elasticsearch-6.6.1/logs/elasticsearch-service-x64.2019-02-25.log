@@ -1,0 +1,4 @@
+[2019-02-25 00:21:20] [info]  [ 9464] Commons Daemon procrun (1.1.0.0 64-bit) started
+[2019-02-25 00:21:21] [info]  [ 9464] Service elasticsearch-service-x64 name Elasticsearch 6.6.1 (elasticsearch-service-x64)
+[2019-02-25 00:21:21] [info]  [ 9464] Service 'elasticsearch-service-x64' installed
+[2019-02-25 00:21:21] [info]  [ 9464] Commons Daemon procrun finished
