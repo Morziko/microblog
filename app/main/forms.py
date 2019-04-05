@@ -12,6 +12,8 @@ class EditProfileForm(FlaskForm):
     about_me = TextAreaField(_l('About me'),
                              validators=[Length(min=0, max=140)])
     abstract = IntegerField(_l('Length posts'), validators=[DataRequired()])
+    city = StringField(_l('Cities'), validators=[DataRequired()])
+    currency = StringField(_l('Currency'), validators=[DataRequired()])
     submit = SubmitField(_l('Submit'))
 
     def __init__(self, original_username, *args, **kwargs):
@@ -49,9 +51,33 @@ class SearchForm(FlaskForm):
             kwargs['csrf_enabled'] = False
         super(SearchForm, self).__init__(*args, **kwargs)
         
+
+
 class MessageForm(FlaskForm):
     message = TextAreaField(_l('Message'), validators=[
         DataRequired(), Length(min=0, max=140)])
     file = FileField(_l('File'))
     submit = SubmitField(_l('Submit'))
 
+
+class CityForm(FlaskForm):
+    city = StringField(_l('City'), validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super(CityForm, self).__init__(*args, **kwargs)
+
+
+
+class ExchangeRatesForm(FlaskForm):
+    currency = StringField(_l('Сurrency'), validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super(ExchangeRatesForm, self).__init__(*args, **kwargs)

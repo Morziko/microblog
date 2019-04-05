@@ -10,15 +10,16 @@ from app.models import *
 # from app.translate import translate
 from app.main import bp
 from flask import g
-from app.main.forms import SearchForm, MessageForm
+
 from app.models import *
 from sqlalchemy import *
 from sqlalchemy import create_engine, MetaData, Table, and_, or_
 from config import Config
-from app.LaTeX import formatLaTeX
+from app.formatText import *
 import requests
 
 import subprocess
+
 import os 
 
 from io import BytesIO
@@ -51,6 +52,11 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
         g.search_form = SearchForm()
+        g.city_form = CityForm()
+        g.city = City.query.filter_by(user_id = current_user.id).all()
+        g.exchangeRate_form = ExchangeRatesForm()
+        g.currency = Currency.query.filter_by(user_id = current_user.id).all()
+
     g.locale = str(get_locale())
 
 
@@ -145,14 +151,150 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         current_user.len_post = form.abstract.data
+        cities = formatCities(form.city.data)
+
+        del_city = City.query.filter_by(user_id = current_user.id).all()
+        for c in del_city:
+            db.session.delete(c)
+        db.session.commit()
+
+        for ct in cities:
+            #current_user.cities.city = form.city.data
+            city = City(city=ct, author=current_user)
+            db.session.add(city)
+
+
+
+        currency = formatCurrency(form.currency.data)
+
+        del_cur = Currency.query.filter_by(user_id = current_user.id).all()
+        for c in del_cur:
+            db.session.delete(c)
+        db.session.commit()
+
+        for cu in currency:
+            #current_user.cities.city = form.city.data
+            curren = Currency(currency=cu, author=current_user)
+            db.session.add(curren)
+
         db.session.commit()
         flash(_('Your changes have been saved.'))
         return redirect(url_for('main.edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
+        form.abstract.data = current_user.len_post
+
+        city = City.query.filter_by(user_id = current_user.id).all()
+        ls = []
+        for ct in city:
+            ls.append(ct.city)
+        print(ls)
+        form.city.data = ' '.join(ls)
+
+        curr = Currency.query.filter_by(user_id = current_user.id).all()
+        ls = []
+        if curr != None:
+            for cr in curr:
+                ls.append(cr.currency)
+            print(ls)
+            form.currency.data = ' '.join(ls)
+        else:
+            form.currency.data = 'EUR-USD'
+
     return render_template('edit_profile.html', title=_('Edit Profile'),
                            form=form)
+
+
+
+
+
+@bp.route('/er/<name>')
+def exchange_rates_names(name):
+    print(name)
+    currency = name.split('-')
+    url1='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[0])
+    json_data = requests.get(url1).json()
+    bid1 = json_data['rates'][0]['bid']
+    ask1 = json_data['rates'][0]['ask']
+    print('bid: {} \nask: {}'.format(bid1,ask1))
+
+    url2='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[1])
+    json_data = requests.get(url2).json()
+    bid2 = json_data['rates'][0]['bid']
+    ask2 = json_data['rates'][0]['ask']
+    print('bid: {} \nask: {}'.format(bid2,ask2))
+
+    print('1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1]))
+    return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+
+
+
+
+@bp.route('/er')
+def exchange_rates():
+    form = ExchangeRatesForm()
+    currency = str(form.currency.data)
+    print(currency)
+    currency = currency.split('-')
+    url1='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[0])
+    json_data = requests.get(url1).json()
+    bid1 = json_data['rates'][0]['bid']
+    ask1 = json_data['rates'][0]['ask']
+    print('bid: {} \nask: {}'.format(bid1,ask1))
+
+    url2='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[1])
+    json_data = requests.get(url2).json()
+    bid2 = json_data['rates'][0]['bid']
+    ask2 = json_data['rates'][0]['ask']
+    print('bid: {} \nask: {}'.format(bid2,ask2))
+
+    print('1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1]))
+    return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+
+
+
+
+
+
+
+
+
+
+
+
+@bp.route('/city/<name>')
+def cityname(name):
+    print(name)
+    url='https://api.openweathermap.org/data/2.5/weather?q={}&appid=cc7310fa8a816edb333e509044ca5187'.format(name)
+    # city = input('City Name :')
+    # url = api_address + city
+    json_data = requests.get(url).json()
+    weat = json_data['weather'][0]['main']
+    temp = json_data['main']['temp']-273.15
+    sky = json_data['weather'][0]['description']
+    weather = formatWeather(temp,sky,weat)
+    return render_template('weather.html', weather=weather)
+
+
+
+
+@bp.route('/city')
+def city():
+    form = CityForm()
+    city = str(form.city.data)
+    print(city)
+    url='https://api.openweathermap.org/data/2.5/weather?q={}&appid=cc7310fa8a816edb333e509044ca5187'.format(city)
+    # city = input('City Name :')
+    # url = api_address + city
+    json_data = requests.get(url).json()
+    weat = json_data['weather'][0]['main']
+    temp = json_data['main']['temp']-273.15
+    sky = json_data['weather'][0]['description']
+    weather = formatWeather(temp,sky,weat)
+    return render_template('weather.html', weather=weather)
+
+
 
 
 
@@ -295,6 +437,7 @@ def pdf_tex(post):
 def searchs():
     form = SearchForm()
     search = str(form.q.data)
+    print('Search',search)
     filterpost = Post.query.filter(Post.body.like('%{}%'.format(search))).all()
     
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
