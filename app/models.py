@@ -47,7 +47,7 @@ class Currency(db.Model):
 class City(db.Model):
     __tablename__='City'
     id = db.Column(db.Integer, primary_key=True)
-    city = db.Column(db.String(140), default = 'Lviv')
+    city = db.Column(db.String(140), default = 'Lviv',server_default='Lviv')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
