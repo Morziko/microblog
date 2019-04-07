@@ -67,9 +67,13 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weather</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% for ct in g.city %}
-                                    <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
-                                {% endfor %}
+                                {% if g.city == 'NewUserCityListClear' %}
+                                    <a href="{{ url_for('main.cityname', name=Lviv) }}">Lviv</a><br>
+                                {% else %}
+                                    {% for ct in g.city %}
+                                        <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
+                                    {% endfor %}
+                                {% endif %}
                                 <div class="dropdown-divider"></div>
                                 {% if g.city_form %}
                                     <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.city') }}">
@@ -84,6 +88,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Currency</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
                                 {% for ct in g.currency %}
                                     <a href="{{ url_for('main.exchange_rates_names', name=ct.currency) }}">{{ct.currency}}</a><br>
                                 {% endfor %}
