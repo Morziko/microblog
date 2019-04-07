@@ -58,8 +58,10 @@ def before_request():
         except:
             g.city = 'NewUserCityListClear'
         g.exchangeRate_form = ExchangeRatesForm()
-        g.currency = Currency.query.filter_by(user_id = current_user.id).all()
-
+        try:
+            g.currency = Currency.query.filter_by(user_id = current_user.id).all()
+        except:
+            g.currency = 'NewUserCurrencyListClear'
     g.locale = str(get_locale())
 
 
