@@ -67,13 +67,11 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weather</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% if g.city == 'NewUserCityListClear' %}
-                                    <a href="{{ url_for('main.cityname', name=Lviv) }}">Lviv</a><br>
-                                {% else %}
-                                    {% for ct in g.city %}
-                                        <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
-                                    {% endfor %}
-                                {% endif %}
+
+                                {% for ct in g.city %}
+                                    <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
+                                {% endfor %}
+
                                 <div class="dropdown-divider"></div>
                                 {% if g.city_form %}
                                     <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.city') }}">
@@ -88,13 +86,11 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Currency</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% if g.city == 'NewUserCurrencyListClear' %}
-                                    <a href="{{ url_for('main.exchange_rates_names', name=EUR-USD) }}">EUR-USD</a><br>
-                                {% else %}
-                                    {% for ct in g.currency %}
-                                        <a href="{{ url_for('main.exchange_rates_names', name=ct.currency) }}">{{ct.currency}}</a><br>
-                                    {% endfor %}
-                                {% endif %}
+
+                                {% for ct in g.currency %}
+                                    <a href="{{ url_for('main.exchange_rates_names', name=ct.currency) }}">{{ct.currency}}</a><br>
+                                {% endfor %}
+
                                 <div class="dropdown-divider"></div>
                                 {% if g.exchangeRate_form %}
                                     <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.exchange_rates') }}">
