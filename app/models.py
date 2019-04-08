@@ -36,18 +36,18 @@ class Test(db.Model):
 
 
 class Currency(db.Model):
-    __tablename__='Currency'
+    # __tablename__='Currency'
     id = db.Column(db.Integer, primary_key=True)
-    currency = db.Column(db.String(140), default = 'EUR-USD')
+    currency = db.Column(db.String(40))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Name {}>'.format(self.city)
+        return '<Name {}>'.format(self.currency)
 
 class City(db.Model):
-    __tablename__='City'
+    # __tablename__='City'
     id = db.Column(db.Integer, primary_key=True)
-    city = db.Column(db.String(140), default = 'Lviv',server_default='Lviv')
+    city = db.Column(db.String(40))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
