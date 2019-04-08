@@ -56,9 +56,6 @@ def before_request():
         print('===================\n',current_user.id,'\n===============')
         # g.city = City.query.filter_by(user_id = current_user.id).all()
         us = User.query.filter_by(id = current_user.id).first()
-        for c in us.cities:
-            print(c.city)
-
         g.city = us.cities
 
         g.exchangeRate_form = ExchangeRatesForm()
