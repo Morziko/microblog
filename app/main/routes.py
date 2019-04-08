@@ -53,15 +53,11 @@ def before_request():
         db.session.commit()
         g.search_form = SearchForm()
         g.city_form = CityForm()
-        try:
-            g.city = City.query.filter_by(user_id = current_user.id).all()
-        except:
-            g.city = 'NewUserCityListClear'
+        g.city = City.query.filter_by(user_id = current_user.id).all()
+
         g.exchangeRate_form = ExchangeRatesForm()
-        try:
-            g.currency = Currency.query.filter_by(user_id = current_user.id).all()
-        except:
-            g.currency = 'NewUserCurrencyListClear'
+        g.currency = Currency.query.filter_by(user_id = current_user.id).all()
+
     g.locale = str(get_locale())
 
 
