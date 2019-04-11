@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content %}
+<table class="table table-hover">
+	<tr>  
+
+            {% autoescape false %}
+                {{ currency }}      
+            {% endautoescape %}   
+            <br>
+
+			{% if form %}
+				
+				<form method="POST" >
+				    {{ form.csrf_token }}
+				    {{ form.sel1 }}
+				    {{ form.sel2 }}
+				    <br>
+				    {{ form.price }} 
+				    <input type="submit" name="">
+				    
+				</form>
+			    <!--{{ wtf.quick_form(form) }}-->
+			    <br>
+		    {% endif %}
+   </tr>
+</table>
+{% endblock %}

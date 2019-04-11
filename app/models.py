@@ -35,6 +35,7 @@ class Test(db.Model):
 """
 
 
+
 class Currency(db.Model):
     # __tablename__='Currency'
     id = db.Column(db.Integer, primary_key=True)
@@ -43,6 +44,7 @@ class Currency(db.Model):
 
     def __repr__(self):
         return '<Name {}>'.format(self.currency)
+
 
 class City(db.Model):
     # __tablename__='City'

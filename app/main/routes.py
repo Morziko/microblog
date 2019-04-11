@@ -53,9 +53,10 @@ def before_request():
         db.session.commit()
         g.search_form = SearchForm()
         g.city_form = CityForm()
-        print('===================\n',current_user.id,'\n===============')
+        # print('===================\n',current_user.id,'\n===============')
         # g.city = City.query.filter_by(user_id = current_user.id).all()
         us = User.query.filter_by(id = current_user.id).first()
+
         g.city = us.cities
 
         g.exchangeRate_form = ExchangeRatesForm()
@@ -196,7 +197,7 @@ def edit_profile():
         for ct in city:
             ls.append(ct.city)
         print(ls)
-        form.city.data = ' '.join(ls)
+        form.city.data = ', '.join(ls)
 
         curr = Currency.query.filter_by(user_id = current_user.id).all()
         ls = []
@@ -204,7 +205,7 @@ def edit_profile():
             for cr in curr:
                 ls.append(cr.currency)
             print(ls)
-            form.currency.data = ' '.join(ls)
+            form.currency.data = ', '.join(ls)
         else:
             form.currency.data = 'EUR-USD'
 
@@ -212,51 +213,90 @@ def edit_profile():
                            form=form)
 
 
+@bp.route('/erp', methods=['GET', 'POST'])
+def exchange_rates_rp(cur1,cur2,price):
+    form_pr = priceForm()
 
-
-
-@bp.route('/er/<name>')
-def exchange_rates_names(name):
-    print(name)
-    currency = name.split('-')
-    url1='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[0])
+    print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
+    url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
     json_data = requests.get(url1).json()
-    bid1 = json_data['rates'][0]['bid']
-    ask1 = json_data['rates'][0]['ask']
-    print('bid: {} \nask: {}'.format(bid1,ask1))
 
-    url2='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[1])
-    json_data = requests.get(url2).json()
-    bid2 = json_data['rates'][0]['bid']
-    ask2 = json_data['rates'][0]['ask']
-    print('bid: {} \nask: {}'.format(bid2,ask2))
+    # print("exchange_rates_rp",currency)
+    bid1 = json_data['rates'][cur1]
+    bid2 = json_data['rates'][cur2]
+    print('exchange_rates_rp')
+    
 
-    print('1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1]))
-    return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    res = '{} {} = {} {}'.format(price, cur1,round(price*(bid2/bid1),2),cur2)
 
-
+    print(res,'in exchange_rates_rp')
+    # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    return render_template('currency.html', currency=res, ac = json_data['rates'].keys(), form = form_pr)
 
 
-@bp.route('/er')
+
+
+@bp.route('/er/<name>', methods=['GET', 'POST'])
+def exchange_rates_names(name):
+    form = priceForm()
+    if request.method == 'POST':
+        price = form.price.data
+        print('after: ',price)
+        cur1 = dict(form.sel1.choices).get(form.sel1.data)
+        cur2 = dict(form.sel2.choices).get(form.sel2.data)
+        
+        print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
+        #return exchange_rates_rp(cur1,cur2,price)
+        return exchange_rates_rp(cur1,cur2,price)
+
+    print('exchange_rates_names: ',name)
+    print(dict(form.sel1.choices).get(form.sel1.data))
+    currency = name.split('-')
+
+    url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
+    json_data = requests.get(url1).json()
+
+    bid1 = json_data['rates'][currency[0]]
+    bid2 = json_data['rates'][currency[1]]
+
+    res = '1 {} = {} {}'.format(currency[0],round(bid2/bid1,2),currency[1])
+    print('def exchange_rates_names: \n   ',res)
+    # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    return render_template('currency.html', currency=res, ac = json_data['rates'].keys(), form = form)
+
+
+
+
+@bp.route('/er', methods=['GET', 'POST'])
 def exchange_rates():
     form = ExchangeRatesForm()
-    currency = str(form.currency.data)
-    print(currency)
-    currency = currency.split('-')
-    url1='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[0])
+    form_pr = priceForm()
+    if request.method == 'POST':
+        price = form_pr.price.data
+        print('after: ',price)
+        cur1 = dict(form_pr.sel1.choices).get(form_pr.sel1.data)
+        cur2 = dict(form_pr.sel2.choices).get(form_pr.sel2.data)
+        
+        print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
+        #return exchange_rates_rp(cur1,cur2,price)
+        return exchange_rates_rp(cur1,cur2,price)
+
+    currency = str(form.currency.data).split('-')
+
+    url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
     json_data = requests.get(url1).json()
-    bid1 = json_data['rates'][0]['bid']
-    ask1 = json_data['rates'][0]['ask']
-    print('bid: {} \nask: {}'.format(bid1,ask1))
 
-    url2='http://api.nbp.pl/api/exchangerates/rates/c/{}/?format=json'.format(currency[1])
-    json_data = requests.get(url2).json()
-    bid2 = json_data['rates'][0]['bid']
-    ask2 = json_data['rates'][0]['ask']
-    print('bid: {} \nask: {}'.format(bid2,ask2))
 
-    print('1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1]))
-    return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    bid1 = json_data['rates'][currency[0]]
+    bid2 = json_data['rates'][currency[1]]
+
+    
+
+    res = '1 {} = {} {}'.format(currency[0],round(bid2/bid1,2),currency[1])
+
+    print('def  exchange_rates: \n   ',res)
+    # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    return render_template('currency.html', currency=res, ac = json_data['rates'].keys(), form = form_pr)
 
 
 
@@ -279,7 +319,7 @@ def cityname(name):
     weat = json_data['weather'][0]['main']
     temp = json_data['main']['temp']-273.15
     sky = json_data['weather'][0]['description']
-    weather = formatWeather(temp,sky,weat)
+    weather = formatWeather(round(temp,1),sky,weat,name)
     return render_template('weather.html', weather=weather)
 
 
@@ -297,7 +337,7 @@ def city():
     weat = json_data['weather'][0]['main']
     temp = json_data['main']['temp']-273.15
     sky = json_data['weather'][0]['description']
-    weather = formatWeather(temp,sky,weat)
+    weather = formatWeather(round(temp,1),sky,weat,city)
     return render_template('weather.html', weather=weather)
 
 

@@ -32,17 +32,21 @@ def formatLaTeX (posts):
     return posts
 
 
-def formatWeather (temp,sky,weat):
-    weather = '<span style="color:orange;">Температура: {}</span> <br>'.format(temp)
+def formatWeather (temp,sky,weat,city):
+    
+    weather = '<span style="color:orange;">Температура: {}</span> <br>'.format(temp) 
     weather = '<span style="color:blue;">Небо: {} </span><br>'.format(sky) + weather
     weather = '<span style="color:#59a680;">Погода: {}</span> <br>'.format(weat) + weather
+    weather = '<span style="color:black;">Місто: {}</span> <br>'.format(city) + weather
 
     return weather
 
 def formatCities(cities):
-    cities = re.split(r'\s{1,}', cities)
+    #cities = re.split(r'\s{1,}', cities)
+    cities = cities.split(', ')
     return cities
 
 def formatCurrency(currency):
-    cur = re.split(r'\s{1,}', currency)
-    return cur
+    #cur = re.split(r'\s{1,}', currency)
+    currency = currency.split(', ')
+    return currency

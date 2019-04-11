@@ -205,5 +205,13 @@
             }, 10000);
         });
         {% endif %}
+        
+        $(function(){    
+            $(".dropdown-menu li a").click(function(){    
+                $(this).closest('.btn-group').find(".btn:first-child").text($(this).text());
+                $(this).closest('.btn-group').find(".btn:first-child").val($(this).text());
+            });  
+        });
+
     </script>
 {% endblock %}
