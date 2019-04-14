@@ -1,15 +1,11 @@
+<!DOCTYPE html>
 {% extends 'bootstrap/base.html' %}
-
+<html>
 <head>
 	
     <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 
-
-
-    <style>
-    body {background-color: powderblue;}
-    tex    {color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 	
@@ -36,7 +32,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
-                    <li><a href="{{ url_for('main.preamble') }}" target="_blank" >{{ _('Preamble') }}</a></li>
+                    
 
                     
                 </ul>
@@ -67,7 +63,8 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weather</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
+                                Last search: <a href="{{ url_for('main.cityname', name=g.lastcity) }}">{{g.lastcity}}</a><br>
+                                <div class="dropdown-divider"></div>
                                 {% for ct in g.city %}
                                     <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
                                 {% endfor %}
@@ -86,7 +83,8 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Currency</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
+                                Last search: <a href="{{ url_for('main.exchange_rates_names', name=g.lastcurrency) }}">{{g.lastcurrency}}</a><br>
+                                <div class="dropdown-divider"></div>
                                 {% for ct in g.currency %}
                                     <a href="{{ url_for('main.exchange_rates_names', name=ct.currency) }}">{{ct.currency}}</a><br>
                                 {% endfor %}
@@ -215,3 +213,4 @@
 
     </script>
 {% endblock %}
+</html>

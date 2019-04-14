@@ -89,12 +89,12 @@ class priceForm(FlaskForm):
     ch = [(str(akey), str(akey)) for akey in json_data['rates']]
 
     # print(ch)
-    sel1 =  SelectField(u'sel1', choices = ch)
-    sel2 =  SelectField(u'sel2', choices = ch)
+    sel1 =  SelectField(u'Currency', choices = ch)
+    sel2 =  SelectField(u'Currency', choices = ch)
 
 
     price = IntegerField(_l('price'), validators=[DataRequired()])
-    # submit = SubmitField(_l('Submit'))
+    submit = SubmitField(_l('Submit'))
 
 """    def __init__(self, *args, **kwargs):
         if 'formdata' not in kwargs:

@@ -53,6 +53,12 @@ def before_request():
         db.session.commit()
         g.search_form = SearchForm()
         g.city_form = CityForm()
+
+        lastcur = HistoryCurrency.query.order_by(HistoryCurrency.id.desc()).first()
+        g.lastcurrency = lastcur.currency
+
+        lastct = HistoryCity.query.order_by(HistoryCity.id.desc()).first()
+        g.lastcity = lastct.city
         # print('===================\n',current_user.id,'\n===============')
         # g.city = City.query.filter_by(user_id = current_user.id).all()
         us = User.query.filter_by(id = current_user.id).first()
@@ -213,9 +219,26 @@ def edit_profile():
                            form=form)
 
 
+@bp.route('/history')
+def history():
+    histcurr = HistoryCurrency.query.filter_by(user_id = current_user.id).all()
+    histcity = HistoryCity.query.filter_by(user_id = current_user.id).all()
+
+    return render_template('history.html', currency = histcurr, city=histcity)
+
+
+
+
+
 @bp.route('/erp', methods=['GET', 'POST'])
 def exchange_rates_rp(cur1,cur2,price):
     form_pr = priceForm()
+
+    currency = '{}-{}'.format(cur1,cur2)
+    cur = HistoryCurrency(currency=currency, author=current_user)
+    db.session.add(cur)
+    db.session.commit()
+
 
     print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
     url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
@@ -227,11 +250,13 @@ def exchange_rates_rp(cur1,cur2,price):
     print('exchange_rates_rp')
     
 
-    res = '{} {} = {} {}'.format(price, cur1,round(price*(bid2/bid1),2),cur2)
+    res = round(price*(bid2/bid1),2)
+
+    
 
     print(res,'in exchange_rates_rp')
     # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
-    return render_template('currency.html', currency=res, ac = json_data['rates'].keys(), form = form_pr)
+    return render_template('currency.html',price=price,res=res,cur1=cur1,cur2=cur2,form=form_pr)
 
 
 
@@ -249,20 +274,30 @@ def exchange_rates_names(name):
         #return exchange_rates_rp(cur1,cur2,price)
         return exchange_rates_rp(cur1,cur2,price)
 
+
+
     print('exchange_rates_names: ',name)
+
+    cur = HistoryCurrency(currency=name, author=current_user)
+    db.session.add(cur)
+    db.session.commit()
+
     print(dict(form.sel1.choices).get(form.sel1.data))
     currency = name.split('-')
-
+    price = 1
     url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
     json_data = requests.get(url1).json()
 
-    bid1 = json_data['rates'][currency[0]]
-    bid2 = json_data['rates'][currency[1]]
+    cur1 = currency[0]
+    cur2 = currency[1]
+    bid1 = json_data['rates'][cur1]
+    bid2 = json_data['rates'][cur2]
 
-    res = '1 {} = {} {}'.format(currency[0],round(bid2/bid1,2),currency[1])
+
+    res = round(bid2/bid1,2)
     print('def exchange_rates_names: \n   ',res)
     # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
-    return render_template('currency.html', currency=res, ac = json_data['rates'].keys(), form = form)
+    return render_template('currency.html', price=price,res=res,cur1=cur1,cur2=cur2, form = form)
 
 
 
@@ -281,22 +316,28 @@ def exchange_rates():
         #return exchange_rates_rp(cur1,cur2,price)
         return exchange_rates_rp(cur1,cur2,price)
 
-    currency = str(form.currency.data).split('-')
 
+    cur = HistoryCurrency(currency=str(form.currency.data), author=current_user)
+    db.session.add(cur)
+    db.session.commit()
+
+    currency = str(form.currency.data).split('-')
+    price = 1
     url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
     json_data = requests.get(url1).json()
 
 
     bid1 = json_data['rates'][currency[0]]
     bid2 = json_data['rates'][currency[1]]
-
+    cur1 = currency[0]
+    cur2 = currency[1]
     
 
-    res = '1 {} = {} {}'.format(currency[0],round(bid2/bid1,2),currency[1])
+    res = round(bid2/bid1,2)
 
     print('def  exchange_rates: \n   ',res)
     # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
-    return render_template('currency.html', currency=res, ac = json_data['rates'].keys(), form = form_pr)
+    return render_template('currency.html', price=price,res=res,cur1=cur1,cur2=cur2, form = form_pr)
 
 
 
@@ -315,12 +356,20 @@ def cityname(name):
     url='https://api.openweathermap.org/data/2.5/weather?q={}&appid=cc7310fa8a816edb333e509044ca5187'.format(name)
     # city = input('City Name :')
     # url = api_address + city
+
+    ct = HistoryCity(city=name, author=current_user)
+    db.session.add(ct)
+    db.session.commit()
+
     json_data = requests.get(url).json()
     weat = json_data['weather'][0]['main']
-    temp = json_data['main']['temp']-273.15
+    temp = round(json_data['main']['temp']-273.15, 1)
     sky = json_data['weather'][0]['description']
-    weather = formatWeather(round(temp,1),sky,weat,name)
-    return render_template('weather.html', weather=weather)
+    icon = json_data['weather'][0]['icon']
+    icon = "http://openweathermap.org/img/w/{}.png".format(icon)
+    print(icon)
+    # weather = formatWeather(round(temp,1),sky,weat,name)
+    return render_template('weather.html', city = name,weat = weat, temp=temp, sky=sky, icon=icon)
 
 
 
@@ -330,15 +379,23 @@ def city():
     form = CityForm()
     city = str(form.city.data)
     print(city)
+
+    ct = HistoryCity(city=city, author=current_user)
+    db.session.add(ct)
+    db.session.commit()
+
     url='https://api.openweathermap.org/data/2.5/weather?q={}&appid=cc7310fa8a816edb333e509044ca5187'.format(city)
     # city = input('City Name :')
     # url = api_address + city
     json_data = requests.get(url).json()
     weat = json_data['weather'][0]['main']
-    temp = json_data['main']['temp']-273.15
+    temp = round(json_data['main']['temp']-273.15, 1)
     sky = json_data['weather'][0]['description']
-    weather = formatWeather(round(temp,1),sky,weat,city)
-    return render_template('weather.html', weather=weather)
+    icon = json_data['weather'][0]['icon']
+    icon = "http://openweathermap.org/img/w/{}.png".format(icon)
+    print(icon)
+    # weather = formatWeather(round(temp,1),sky,weat,city)
+    return render_template('weather.html', city = city,weat = weat, temp=temp, sky=sky, icon=icon)
 
 
 

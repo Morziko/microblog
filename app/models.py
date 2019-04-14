@@ -23,6 +23,9 @@ followers = db.Table(
 
 
 
+
+
+
 class Preambul(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
@@ -34,6 +37,21 @@ class Test(db.Model):
 
 """
 
+class HistoryCurrency(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    currency = db.Column(db.String(40))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Currency {}>'.format(self.currency)
+
+class HistoryCity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    city = db.Column(db.String(40))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<City {}>'.format(self.city)
 
 
 class Currency(db.Model):
@@ -62,6 +80,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     cities = db.relationship('City', backref='author', lazy='dynamic')
+    historyCur = db.relationship('HistoryCurrency', backref='author', lazy='dynamic')
+    historyCity = db.relationship('HistoryCity', backref='author', lazy='dynamic')
     currencies = db.relationship('Currency', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
