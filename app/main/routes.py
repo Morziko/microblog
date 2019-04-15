@@ -55,20 +55,31 @@ def before_request():
         g.city_form = CityForm()
 
         lastcur = HistoryCurrency.query.order_by(HistoryCurrency.id.desc()).first()
-        g.lastcurrency = lastcur.currency
+        if lastcur != None:
+            g.lastcurrency = lastcur.currency
+        else:
+            g.lastcurrency = 'EUR-UAH'
 
         lastct = HistoryCity.query.order_by(HistoryCity.id.desc()).first()
-        g.lastcity = lastct.city
+        if lastct != None:
+            g.lastcity = lastct.city
+        else:
+            g.lastcity = 'Lviv'
         # print('===================\n',current_user.id,'\n===============')
-        # g.city = City.query.filter_by(user_id = current_user.id).all()
-        us = User.query.filter_by(id = current_user.id).first()
-
-        g.city = us.cities
+        g.city = City.query.filter_by(user_id = current_user.id).all()
+        # us = User.query.filter_by(id = current_user.id).first()
+        if g.city != None:
+            g.city = us.cities
+        else:
+            g.city = 'Lviv'
 
         g.exchangeRate_form = ExchangeRatesForm()
 
-        #g.currency = Currency.query.filter_by(user_id = current_user.id).all()
-        g.currency = us.currencies
+        g.currency = Currency.query.filter_by(user_id = current_user.id).all()
+        if g.currency != None:
+            g.currency = us.currencies
+        else:
+            g.currency = 'EUR-UAH'
 
     g.locale = str(get_locale())
 
