@@ -31,12 +31,6 @@ class Preambul(db.Model):
     body = db.Column(db.String(140))
 
 
-class Test(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-
-
-
 class HistoryCurrency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     currency = db.Column(db.String(40))
