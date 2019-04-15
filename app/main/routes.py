@@ -69,7 +69,7 @@ def before_request():
         g.city = City.query.filter_by(user_id = current_user.id).all()
         # us = User.query.filter_by(id = current_user.id).first()
         if g.city != None:
-            g.city = us.cities
+            g.city = g.city
         else:
             g.city = 'Lviv'
 
