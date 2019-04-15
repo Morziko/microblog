@@ -66,17 +66,17 @@ def before_request():
         else:
             g.lastcity = 'Lviv'
         # print('===================\n',current_user.id,'\n===============')
-        g.city = City.query.filter_by(user_id = current_user.id).all()
-        # us = User.query.filter_by(id = current_user.id).first()
-        if g.city != None:
-            g.city = g.city
+        # g.city = City.query.filter_by(user_id = current_user.id).all()
+        us = User.query.filter_by(id = current_user.id).first()
+        if us.cities != None:
+            g.city = us.cities
         else:
             g.city = 'Lviv'
 
         g.exchangeRate_form = ExchangeRatesForm()
 
         g.currency = Currency.query.filter_by(user_id = current_user.id).all()
-        if g.currency != None:
+        if us.currencies != None:
             g.currency = us.currencies
         else:
             g.currency = 'EUR-UAH'
