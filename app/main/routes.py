@@ -75,9 +75,6 @@ def before_request():
 
         g.exchangeRate_form = ExchangeRatesForm()
 
-        test = Test.query.filter_by(id = 1).first()
-        test = test.body
-
         g.currency = Currency.query.filter_by(user_id = current_user.id).all()
         if us.currencies != None:
             g.currency = us.currencies
