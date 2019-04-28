@@ -16,13 +16,15 @@
                 {% if user == current_user %}
                 <p><a href="{{ url_for('main.edit_profile') }}">{{ _('Edit your profile') }}</a></p>
                 <p><a href="{{ url_for('main.history') }}">{{ _('Hisory') }}</a></p>
+                <p><a href="{{ url_for('main.preamble') }}" target="_blank" >{{ _('Preamble') }}</a></p>
+                <p><a href="{{ url_for('main.all_users') }}"> All users </a></p>
 
                 {% elif not current_user.is_following(user) %}
                 <p><a href="{{ url_for('main.follow', username=user.username) }}">{{ _('Follow') }}</a></p>
                 {% else %}
                 <p><a href="{{ url_for('main.unfollow', username=user.username) }}">{{ _('Unfollow') }}</a></p>
                 {% endif %}
-                <a href="{{ url_for('main.preamble') }}" target="_blank" >{{ _('Preamble') }}</a>
+                
                 {% if user != current_user %}
                 <p>
                     <a href="{{ url_for('main.send_message',

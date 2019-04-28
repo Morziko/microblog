@@ -23,12 +23,16 @@ def formatLaTeX (posts):
                 
 
         post.body = post.body.replace( "\n","<br>") # \n
-        post.body = post.body.replace('$$', '<span style="color:red;"><br>$$</span>') # $$
-        # post.body = post.body.replace('$', '<span style="color:red;"><br>$</span>') # $
+        post.body = post.body.replace('$$', '<span style="color:red;">$$</span>') # $$
+        post.body = post.body.replace('$', '<span style="color:red;">$</span>') # $
         post.body = post.body.replace('\\begin','<span style="color:blue;"><b><br>\\begin</b></span>') # \begin 
         post.body = post.body.replace('\end','<span style="color:blue;"><b><br>\end</b></span>') # \end
 
-        post.body = post.body.replace('equation','<b style="color:#009933">equation</b>') # equation 
+        post.body = post.body.replace('{equation}','<b style="color:#009933">{equation}</b>') # equation 
+        post.body = post.body.replace('{document}','<b style="color:#009933">{document}</b>') # document
+        post.body = post.body.replace('\\newpage','<span style="color:blue;"><b><br>\\newpage</b></span>')
+
+
     return posts
 
 

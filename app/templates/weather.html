@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block app_content %}
-<div >
+<div>
     <table class="table table-hover">
     	<tr>  
             {% autoescape false %}
                 <h1 style="color:black; text-align:center; "><i>City: {{ city }}</i></h1> <br>
-
+                
                 {% if sky == 'clear sky' %}
                     <img src="{{url_for('static', filename='sun.jpg')}}" align="right"/><br>
                 {% elif sky == 'scattered clouds' or sky =='broken clouds' %}
@@ -29,11 +29,6 @@
                 <span style="color:#59a680;font-size:150%;">Weather: {{ weat }}</span> <br>
             
             {% endautoescape %}    
-                  
-                
-
-
-
        </tr>
     </table>
 </div>

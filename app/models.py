@@ -91,6 +91,8 @@ class User(UserMixin, db.Model):
                 db.Column('people_user', db.Boolean)
             """
     len_post = db.Column(db.Integer, default=20)
+    preamble_id = db.Column(db.Integer, default=1)
+    # preamble = db.Column(db.Integer, default=1)
 
     messages_sent = db.relationship('Message',
                                     foreign_keys='Message.sender_id',

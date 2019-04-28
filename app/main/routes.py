@@ -131,6 +131,13 @@ def index():
                            posts=posts, next_url=next_url,
                            prev_url=prev_url, len_post = int(len_post))
 
+@bp.route('/all')
+@login_required
+def all_users():
+    page = request.args.get('page', 1, type=int)
+    users = User.query.all()
+    title = 'All users'
+    return render_template('followed.html', followeds=users, title = title)
 
 @bp.route('/explore')
 @login_required
@@ -175,6 +182,7 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         current_user.len_post = form.abstract.data
+        # current_user.preamble_id = 1
         cities = formatCities(form.city.data)
 
         del_city = City.query.filter_by(user_id = current_user.id).all()
@@ -228,6 +236,21 @@ def edit_profile():
 
     return render_template('edit_profile.html', title=_('Edit Profile'),
                            form=form)
+
+
+
+@bp.route('/spre/<ids>', methods=['GET', 'POST'])
+def save_preamble(ids):
+    us = User.query.filter_by(username = current_user.username).first()
+
+    us = User.query.filter_by(username = current_user.username).first()
+
+    current_user.preamble_id = int(ids)
+    print(us.preamble_id)
+    db.session.commit()
+    return user(current_user.username)
+
+
 
 
 @bp.route('/history')
@@ -422,10 +445,20 @@ def preamble():
         
         flash(_('Your preamble is now live!'))
         return redirect(url_for('main.preamble'))
+    user = User.query.filter_by(username = current_user.username).first()
+    print('def preamble: user.id ',user.id)
+    default_pre_id = user.preamble_id
+    print(default_pre_id)
+    default = Preambul.query.filter_by(id = int(default_pre_id)).first()
+    print(default.body)
+    default = formatLaTeX([default])
+    # print(default.body)
     pream = Preambul.query.all()
     # print(pream[0].body)
     pream = formatLaTeX(pream)
-    return render_template('preamble.html', preamble=pream, form = form)
+    
+    # default = formatLaTeX(default)
+    return render_template('preamble.html',default = default, preamble=pream, form = form)
 
 
 """
@@ -526,16 +559,21 @@ def delete_post(post):
 def pdf_tex(post):
     print('before start LaTeX')
     post = Post.query.filter_by(id = post).first()
+
+
+    user = User.query.filter_by(username = current_user.username).first()
+    default_pre_id = user.preamble_id
+    print(default_pre_id)
+    default = Preambul.query.filter_by(id = int(default_pre_id)).first()
+    print(default.body)
+
+    default.body = default.body.replace('\n\end{document}','')
+
+
+
     url = r'C:\Users\YURA\eclipse-workspace\microblog\LaTeX_PDF\{}'.format('pdflatex')
     with open('{}.tex'.format(url), 'wb') as f:
-        f.write(r'''\documentclass[a4paper,12pt]{article}
-\usepackage[ukrainian,english]{babel}
-\usepackage[utf8]{inputenc}
-
-\topmargin=-15mm
-\textheight=230mm
-\begin{document}  
-'''.encode('utf8'))
+        f.write(default.body.encode('utf8'))
         f.write(post.body.encode('utf8'))
         f.write("\n\end{document}".encode('utf8'))
 
@@ -573,8 +611,9 @@ def searchs():
     for row in result:
         list.append(int(row.id))
     pos = Post.query.filter(Post.id.in_(list)).all()
-    
-    return render_template('searchs.html' , posts=pos)
+    leng = User.query.filter_by(username = current_user.username).first()
+    len_post = leng.len_post
+    return render_template('searchs.html' , posts=pos, len_post=int(len_post))
 
 
 
