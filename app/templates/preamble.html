@@ -5,16 +5,28 @@
     {{ wtf.quick_form(form) }}
     <br>
 {% endif %}
-{% for pream in preamble %}
+{% for def in default %}
+<table class="table table-hover">
+   <tr>
+        <td>
+            <br>
+            {% autoescape false %}
+                {{ def.body }}   
+            {% endautoescape %}
+        </td>
 
+    </tr>
+</table>
+{% endfor %}
+{% for pream in preamble %}
     <table class="table table-hover">
 	   <tr>
             <td>
                 <br>
-    				{% autoescape false %}
-    					{{ pream.body}}   
-    				{% endautoescape %}
-
+				{% autoescape false %}
+					{{ pream.body }}
+				{% endautoescape %}
+                <a href="{{ url_for('main.save_preamble', ids=pream.id) }}" class="btn btn-primary pull-right">Save</a>
             </td>
        </tr>
     </table>

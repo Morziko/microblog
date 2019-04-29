@@ -23,18 +23,24 @@ def formatLaTeX (posts):
                 
 
         post.body = post.body.replace( "\n","<br>") # \n
-        post.body = post.body.replace('$$', '<span style="color:red;"><br>$$</span>') # $$
-        # post.body = post.body.replace('$', '<span style="color:red;"><br>$</span>') # $
+
+        post.body = post.body.replace('$$', '<span style="color:red;">$$</span>') # $$
+        post.body = post.body.replace('$', '<span style="color:red;">$</span>') # $
         post.body = post.body.replace('\\begin','<span style="color:blue;"><b><br>\\begin</b></span>') # \begin 
         post.body = post.body.replace('\end','<span style="color:blue;"><b><br>\end</b></span>') # \end
 
-        post.body = post.body.replace('equation','<b style="color:#009933">equation</b>') # equation 
+        post.body = post.body.replace('{equation}','<b style="color:#009933">{equation}</b>') # equation 
+        post.body = post.body.replace('{document}','<b style="color:#009933">{document}</b>') # document
+        post.body = post.body.replace('\\newpage','<span style="color:blue;"><b><br>\\newpage</b></span>')
+
     return posts
 
 
 def formatWeather (temp,sky,weat,city):
     
-    weather = '<span style="color:orange;">Температура: {}</span> <br>'.format(temp) 
+
+    weather = '<span style="color:orange;">Температура: {}</span>'.format(temp) 
+
     weather = '<span style="color:blue;">Небо: {} </span><br>'.format(sky) + weather
     weather = '<span style="color:#59a680;">Погода: {}</span> <br>'.format(weat) + weather
     weather = '<span style="color:black;">Місто: {}</span> <br>'.format(city) + weather
@@ -49,4 +55,9 @@ def formatCities(cities):
 def formatCurrency(currency):
     #cur = re.split(r'\s{1,}', currency)
     currency = currency.split(', ')
+
     return currency
+
+def formatCurForHTML(price,bid1,bid2,cur1,cur2):
+    res = '{} {} = {} {}'.format(price, cur1,round(price*(bid2/bid1),2),cur2)
+

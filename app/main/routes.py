@@ -10,15 +10,16 @@ from app.models import *
 # from app.translate import translate
 from app.main import bp
 from flask import g
-from app.main.forms import SearchForm, MessageForm
+
 from app.models import *
 from sqlalchemy import *
 from sqlalchemy import create_engine, MetaData, Table, and_, or_
 from config import Config
-from app.LaTeX import formatLaTeX
+from app.formatText import *
 import requests
 
 import subprocess
+
 import os 
 
 from io import BytesIO
@@ -51,6 +52,35 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
         g.search_form = SearchForm()
+        g.city_form = CityForm()
+
+        lastcur = HistoryCurrency.query.order_by(HistoryCurrency.id.desc()).first()
+        if lastcur != None:
+            g.lastcurrency = lastcur.currency
+        else:
+            g.lastcurrency = 'EUR-UAH'
+
+        lastct = HistoryCity.query.order_by(HistoryCity.id.desc()).first()
+        if lastct != None:
+            g.lastcity = lastct.city
+        else:
+            g.lastcity = 'Lviv'
+        # print('===================\n',current_user.id,'\n===============')
+        # g.city = City.query.filter_by(user_id = current_user.id).all()
+        us = User.query.filter_by(id = current_user.id).first()
+        if us.cities != None:
+            g.city = us.cities
+        else:
+            g.city = 'Lviv'
+
+        g.exchangeRate_form = ExchangeRatesForm()
+
+        g.currency = Currency.query.filter_by(user_id = current_user.id).all()
+        if us.currencies != None:
+            g.currency = us.currencies
+        else:
+            g.currency = 'EUR-UAH'
+
     g.locale = str(get_locale())
 
 
@@ -101,6 +131,13 @@ def index():
                            posts=posts, next_url=next_url,
                            prev_url=prev_url, len_post = int(len_post))
 
+@bp.route('/all')
+@login_required
+def all_users():
+    page = request.args.get('page', 1, type=int)
+    users = User.query.all()
+    title = 'All users'
+    return render_template('followed.html', followeds=users, title = title)
 
 @bp.route('/explore')
 @login_required
@@ -145,14 +182,256 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.about_me.data
         current_user.len_post = form.abstract.data
+        # current_user.preamble_id = 1
+        cities = formatCities(form.city.data)
+
+        del_city = City.query.filter_by(user_id = current_user.id).all()
+        for c in del_city:
+            db.session.delete(c)
+        db.session.commit()
+
+        for ct in cities:
+            #current_user.cities.city = form.city.data
+            city = City(city=ct, author=current_user)
+            db.session.add(city)
+
+
+
+        currency = formatCurrency(form.currency.data)
+
+        del_cur = Currency.query.filter_by(user_id = current_user.id).all()
+        for c in del_cur:
+            db.session.delete(c)
+        db.session.commit()
+
+        for cu in currency:
+            #current_user.cities.city = form.city.data
+            curren = Currency(currency=cu, author=current_user)
+            db.session.add(curren)
+
         db.session.commit()
         flash(_('Your changes have been saved.'))
         return redirect(url_for('main.edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
+        form.abstract.data = current_user.len_post
+
+        city = City.query.filter_by(user_id = current_user.id).all()
+        ls = []
+        for ct in city:
+            ls.append(ct.city)
+        print(ls)
+        form.city.data = ', '.join(ls)
+
+        curr = Currency.query.filter_by(user_id = current_user.id).all()
+        ls = []
+        if curr != None:
+            for cr in curr:
+                ls.append(cr.currency)
+            print(ls)
+            form.currency.data = ', '.join(ls)
+        else:
+            form.currency.data = 'EUR-USD'
+
     return render_template('edit_profile.html', title=_('Edit Profile'),
                            form=form)
+
+
+
+@bp.route('/spre/<ids>', methods=['GET', 'POST'])
+def save_preamble(ids):
+    us = User.query.filter_by(username = current_user.username).first()
+
+    us = User.query.filter_by(username = current_user.username).first()
+
+    current_user.preamble_id = int(ids)
+    print(us.preamble_id)
+    db.session.commit()
+    return user(current_user.username)
+
+
+
+
+@bp.route('/history')
+def history():
+    histcurr = HistoryCurrency.query.filter_by(user_id = current_user.id).all()
+    histcity = HistoryCity.query.filter_by(user_id = current_user.id).all()
+
+    return render_template('history.html', currency = histcurr, city=histcity)
+
+
+
+
+
+@bp.route('/erp', methods=['GET', 'POST'])
+def exchange_rates_rp(cur1,cur2,price):
+    form_pr = priceForm()
+
+    currency = '{}-{}'.format(cur1,cur2)
+    cur = HistoryCurrency(currency=currency, author=current_user)
+    db.session.add(cur)
+    db.session.commit()
+
+
+    print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
+    url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
+    json_data = requests.get(url1).json()
+
+    # print("exchange_rates_rp",currency)
+    bid1 = json_data['rates'][cur1]
+    bid2 = json_data['rates'][cur2]
+    print('exchange_rates_rp')
+    
+
+    res = round(price*(bid2/bid1),2)
+
+    
+
+    print(res,'in exchange_rates_rp')
+    # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    return render_template('currency.html',price=price,res=res,cur1=cur1,cur2=cur2,form=form_pr)
+
+
+
+
+@bp.route('/er/<name>', methods=['GET', 'POST'])
+def exchange_rates_names(name):
+    form = priceForm()
+    if request.method == 'POST':
+        price = form.price.data
+        print('after: ',price)
+        cur1 = dict(form.sel1.choices).get(form.sel1.data)
+        cur2 = dict(form.sel2.choices).get(form.sel2.data)
+        
+        print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
+        #return exchange_rates_rp(cur1,cur2,price)
+        return exchange_rates_rp(cur1,cur2,price)
+
+
+
+    print('exchange_rates_names: ',name)
+
+    cur = HistoryCurrency(currency=name, author=current_user)
+    db.session.add(cur)
+    db.session.commit()
+
+    print(dict(form.sel1.choices).get(form.sel1.data))
+    currency = name.split('-')
+    price = 1
+    url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
+    json_data = requests.get(url1).json()
+
+    cur1 = currency[0]
+    cur2 = currency[1]
+    bid1 = json_data['rates'][cur1]
+    bid2 = json_data['rates'][cur2]
+
+
+    res = round(bid2/bid1,2)
+    print('def exchange_rates_names: \n   ',res)
+    # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    return render_template('currency.html', price=price,res=res,cur1=cur1,cur2=cur2, form = form)
+
+
+
+
+@bp.route('/er', methods=['GET', 'POST'])
+def exchange_rates():
+    form = ExchangeRatesForm()
+    form_pr = priceForm()
+    if request.method == 'POST':
+        price = form_pr.price.data
+        print('after: ',price)
+        cur1 = dict(form_pr.sel1.choices).get(form_pr.sel1.data)
+        cur2 = dict(form_pr.sel2.choices).get(form_pr.sel2.data)
+        
+        print('cur1: {}, cur2: {}, price: {}'.format(cur1,cur2,price))
+        #return exchange_rates_rp(cur1,cur2,price)
+        return exchange_rates_rp(cur1,cur2,price)
+
+
+    cur = HistoryCurrency(currency=str(form.currency.data), author=current_user)
+    db.session.add(cur)
+    db.session.commit()
+
+    currency = str(form.currency.data).split('-')
+    price = 1
+    url1='http://data.fixer.io/api/latest?access_key=82d9c1133d96a124953ca87e204fb421'
+    json_data = requests.get(url1).json()
+
+
+    bid1 = json_data['rates'][currency[0]]
+    bid2 = json_data['rates'][currency[1]]
+    cur1 = currency[0]
+    cur2 = currency[1]
+    
+
+    res = round(bid2/bid1,2)
+
+    print('def  exchange_rates: \n   ',res)
+    # return '1 {} = {} {}'.format(currency[0],bid1/bid2,currency[1])
+    return render_template('currency.html', price=price,res=res,cur1=cur1,cur2=cur2, form = form_pr)
+
+
+
+
+
+
+
+
+
+
+
+
+@bp.route('/city/<name>')
+def cityname(name):
+    print(name)
+    url='https://api.openweathermap.org/data/2.5/weather?q={}&appid=cc7310fa8a816edb333e509044ca5187'.format(name)
+    # city = input('City Name :')
+    # url = api_address + city
+
+    ct = HistoryCity(city=name, author=current_user)
+    db.session.add(ct)
+    db.session.commit()
+
+    json_data = requests.get(url).json()
+    weat = json_data['weather'][0]['main']
+    temp = round(json_data['main']['temp']-273.15, 1)
+    sky = json_data['weather'][0]['description']
+    icon = json_data['weather'][0]['icon']
+    icon = "http://openweathermap.org/img/w/{}.png".format(icon)
+    print(icon)
+    # weather = formatWeather(round(temp,1),sky,weat,name)
+    return render_template('weather.html', city = name,weat = weat, temp=temp, sky=sky, icon=icon)
+
+
+
+
+@bp.route('/city')
+def city():
+    form = CityForm()
+    city = str(form.city.data)
+    print(city)
+
+    ct = HistoryCity(city=city, author=current_user)
+    db.session.add(ct)
+    db.session.commit()
+
+    url='https://api.openweathermap.org/data/2.5/weather?q={}&appid=cc7310fa8a816edb333e509044ca5187'.format(city)
+    # city = input('City Name :')
+    # url = api_address + city
+    json_data = requests.get(url).json()
+    weat = json_data['weather'][0]['main']
+    temp = round(json_data['main']['temp']-273.15, 1)
+    sky = json_data['weather'][0]['description']
+    icon = json_data['weather'][0]['icon']
+    icon = "http://openweathermap.org/img/w/{}.png".format(icon)
+    print(icon)
+    # weather = formatWeather(round(temp,1),sky,weat,city)
+    return render_template('weather.html', city = city,weat = weat, temp=temp, sky=sky, icon=icon)
+
+
 
 
 
@@ -166,10 +445,20 @@ def preamble():
         
         flash(_('Your preamble is now live!'))
         return redirect(url_for('main.preamble'))
+    user = User.query.filter_by(username = current_user.username).first()
+    print('def preamble: user.id ',user.id)
+    default_pre_id = user.preamble_id
+    print(default_pre_id)
+    default = Preambul.query.filter_by(id = int(default_pre_id)).first()
+    print(default.body)
+    default = formatLaTeX([default])
+    # print(default.body)
     pream = Preambul.query.all()
     # print(pream[0].body)
     pream = formatLaTeX(pream)
-    return render_template('preamble.html', preamble=pream, form = form)
+    
+    # default = formatLaTeX(default)
+    return render_template('preamble.html',default = default, preamble=pream, form = form)
 
 
 """
@@ -270,16 +559,21 @@ def delete_post(post):
 def pdf_tex(post):
     print('before start LaTeX')
     post = Post.query.filter_by(id = post).first()
+
+
+    user = User.query.filter_by(username = current_user.username).first()
+    default_pre_id = user.preamble_id
+    print(default_pre_id)
+    default = Preambul.query.filter_by(id = int(default_pre_id)).first()
+    print(default.body)
+
+    default.body = default.body.replace('\n\end{document}','')
+
+
+
     url = r'C:\Users\YURA\eclipse-workspace\microblog\LaTeX_PDF\{}'.format('pdflatex')
     with open('{}.tex'.format(url), 'wb') as f:
-        f.write(r'''\documentclass[a4paper,12pt]{article}
-\usepackage[ukrainian,english]{babel}
-\usepackage[utf8]{inputenc}
-
-\topmargin=-15mm
-\textheight=230mm
-\begin{document}  
-'''.encode('utf8'))
+        f.write(default.body.encode('utf8'))
         f.write(post.body.encode('utf8'))
         f.write("\n\end{document}".encode('utf8'))
 
@@ -295,6 +589,7 @@ def pdf_tex(post):
 def searchs():
     form = SearchForm()
     search = str(form.q.data)
+    print('Search',search)
     filterpost = Post.query.filter(Post.body.like('%{}%'.format(search))).all()
     
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
@@ -316,8 +611,9 @@ def searchs():
     for row in result:
         list.append(int(row.id))
     pos = Post.query.filter(Post.id.in_(list)).all()
-    
-    return render_template('searchs.html' , posts=pos)
+    leng = User.query.filter_by(username = current_user.username).first()
+    len_post = leng.len_post
+    return render_template('searchs.html' , posts=pos, len_post=int(len_post))
 
 
 

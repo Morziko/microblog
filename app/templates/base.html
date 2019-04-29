@@ -1,17 +1,6 @@
 {% extends 'bootstrap/base.html' %}
 
-<head>
-	
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 
-
-
-    <style>
-    body {background-color: powderblue;}
-    tex    {color: red;}
-    </style>
-
-</head>
 	
 {% block title %}
 	 {% if title %}{{ title }} - Microblog{% else %}{{ _('Welcome to Microblog') }}{% endif %}
@@ -21,7 +10,7 @@
 
 
 {% block navbar %}
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -36,7 +25,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
-                    <li><a href="{{ url_for('main.preamble') }}" target="_blank" >{{ _('Preamble') }}</a></li>
+                    
+
                     
                 </ul>
                 {% if g.search_form %}
@@ -47,9 +37,10 @@
                 </form>
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right">
+
                 	{% if current_user.is_anonymous %}
                     	<li><a href="{{ url_for('auth.login') }}">{{ _('Login') }}</a></li>
-                	{% else %}
+                	{% else %} 
 	                    <li>
 	                        <a href="{{ url_for('main.messages') }}">{{ _('Messages') }}
 	                            {% set new_messages = current_user.new_messages() %}
@@ -60,6 +51,48 @@
 	                            </span>
 	                        </a>
 	                    </li>
+
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weather</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                Last search: <a href="{{ url_for('main.cityname', name=g.lastcity) }}">{{g.lastcity}}</a><br>
+                                <div class="dropdown-divider"></div>
+                                {% for ct in g.city %}
+                                    <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
+                                {% endfor %}
+
+                                <div class="dropdown-divider"></div>
+                                {% if g.city_form %}
+                                    <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.city') }}">
+                                        <div class="form-group">
+                                            {{ g.city_form.city(size=20, class='form-control', placeholder=g.city_form.city.label.text) }}
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Currency</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                Last search: <a href="{{ url_for('main.exchange_rates_names', name=g.lastcurrency) }}">{{g.lastcurrency}}</a><br>
+                                <div class="dropdown-divider"></div>
+                                {% for ct in g.currency %}
+                                    <a href="{{ url_for('main.exchange_rates_names', name=ct.currency) }}">{{ct.currency}}</a><br>
+                                {% endfor %}
+
+                                <div class="dropdown-divider"></div>
+                                {% if g.exchangeRate_form %}
+                                    <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.exchange_rates') }}">
+                                        <div class="form-group">
+                                            {{ g.exchangeRate_form.currency(size=20, class='form-control', placeholder=g.exchangeRate_form.currency.label.text) }}
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </li>
+
 	                    <li><a href="{{ url_for('main.user', username=current_user.username) }}">{{ _('Profile') }}</a></li>
 	                    <li><a href="{{ url_for('auth.logout') }}">{{ _('Logout') }}</a></li>
                     {% endif %}
@@ -163,5 +196,13 @@
             }, 10000);
         });
         {% endif %}
+        
+        $(function(){    
+            $(".dropdown-menu li a").click(function(){    
+                $(this).closest('.btn-group').find(".btn:first-child").text($(this).text());
+                $(this).closest('.btn-group').find(".btn:first-child").val($(this).text());
+            });  
+        });
+
     </script>
 {% endblock %}
