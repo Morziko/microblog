@@ -1,8 +1,8 @@
-"""cities
+"""test for heroku fail
 
-Revision ID: 83c08dacd132
-Revises: 40c15bc42d78
-Create Date: 2019-04-04 13:06:44.489541
+Revision ID: e6f825343b4f
+Revises: b14991ca088c
+Create Date: 2019-04-16 09:36:09.141148
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '83c08dacd132'
-down_revision = '40c15bc42d78'
+revision = 'e6f825343b4f'
+down_revision = 'b14991ca088c'
 branch_labels = None
 depends_on = None
 

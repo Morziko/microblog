@@ -22,32 +22,42 @@ followers = db.Table(
 )
 
 
-
 class Preambul(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
 
-"""
-class Test(db.Model):
+
+class HistoryCurrency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-
-"""
-
-
-class Currency(db.Model):
-    __tablename__='Currency'
-    id = db.Column(db.Integer, primary_key=True)
-    currency = db.Column(db.String(140), default = 'EUR-USD')
+    currency = db.Column(db.String(40))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Name {}>'.format(self.city)
+        return '<Currency {}>'.format(self.currency)
+
+class HistoryCity(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    city = db.Column(db.String(40))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<City {}>'.format(self.city)
+
+
+class Currency(db.Model):
+    # __tablename__='Currency'
+    id = db.Column(db.Integer, primary_key=True)
+    currency = db.Column(db.String(40))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Name {}>'.format(self.currency)
+
 
 class City(db.Model):
-    __tablename__='City'
+    # __tablename__='City'
     id = db.Column(db.Integer, primary_key=True)
-    city = db.Column(db.String(140), default = 'Lviv',server_default='Lviv')
+    city = db.Column(db.String(40))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
@@ -60,6 +70,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     cities = db.relationship('City', backref='author', lazy='dynamic')
+    historyCur = db.relationship('HistoryCurrency', backref='author', lazy='dynamic')
+    historyCity = db.relationship('HistoryCity', backref='author', lazy='dynamic')
     currencies = db.relationship('Currency', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
@@ -79,6 +91,8 @@ class User(UserMixin, db.Model):
                 db.Column('people_user', db.Boolean)
             """
     len_post = db.Column(db.Integer, default=20)
+    preamble_id = db.Column(db.Integer, default=1)
+    # preamble = db.Column(db.Integer, default=1)
 
     messages_sent = db.relationship('Message',
                                     foreign_keys='Message.sender_id',

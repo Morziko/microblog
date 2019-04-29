@@ -1,17 +1,6 @@
 {% extends 'bootstrap/base.html' %}
 
-<head>
-	
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 
-
-
-    <style>
-    body {background-color: powderblue;}
-    tex    {color: red;}
-    </style>
-
-</head>
 	
 {% block title %}
 	 {% if title %}{{ title }} - Microblog{% else %}{{ _('Welcome to Microblog') }}{% endif %}
@@ -21,7 +10,7 @@
 
 
 {% block navbar %}
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -36,7 +25,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
-                    <li><a href="{{ url_for('main.preamble') }}" target="_blank" >{{ _('Preamble') }}</a></li>
+                    
 
                     
                 </ul>
@@ -67,9 +56,12 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weather</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                Last search: <a href="{{ url_for('main.cityname', name=g.lastcity) }}">{{g.lastcity}}</a><br>
+                                <div class="dropdown-divider"></div>
                                 {% for ct in g.city %}
                                     <a href="{{ url_for('main.cityname', name=ct.city) }}">{{ct.city}}</a><br>
                                 {% endfor %}
+
                                 <div class="dropdown-divider"></div>
                                 {% if g.city_form %}
                                     <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.city') }}">
@@ -84,9 +76,12 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Currency</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                Last search: <a href="{{ url_for('main.exchange_rates_names', name=g.lastcurrency) }}">{{g.lastcurrency}}</a><br>
+                                <div class="dropdown-divider"></div>
                                 {% for ct in g.currency %}
                                     <a href="{{ url_for('main.exchange_rates_names', name=ct.currency) }}">{{ct.currency}}</a><br>
                                 {% endfor %}
+
                                 <div class="dropdown-divider"></div>
                                 {% if g.exchangeRate_form %}
                                     <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.exchange_rates') }}">
@@ -201,5 +196,13 @@
             }, 10000);
         });
         {% endif %}
+        
+        $(function(){    
+            $(".dropdown-menu li a").click(function(){    
+                $(this).closest('.btn-group').find(".btn:first-child").text($(this).text());
+                $(this).closest('.btn-group').find(".btn:first-child").val($(this).text());
+            });  
+        });
+
     </script>
 {% endblock %}

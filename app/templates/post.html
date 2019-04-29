@@ -16,9 +16,7 @@
                             {{ post.author.username }}
                         </a>
                     </span>
-
                     <a href="{{ url_for('main.pdf_tex', post=post.id)}}" target="_blank" class="btn btn-primary btn-xs">pdf</a>
-                    
                     {% if file %}
                         <a href="{{ url_for('main.download', file=file.id) }}" target="_blank" class="btn btn-primary btn-xs">Download file</a>
                     {% endif %}
