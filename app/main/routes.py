@@ -450,14 +450,13 @@ def preamble():
     default_pre_id = user.preamble_id
     print(default_pre_id)
     default = Preambul.query.filter_by(id = int(default_pre_id)).first()
-    print(default.body)
+
     default = formatLaTeX([default])
-    # print(default.body)
+
     pream = Preambul.query.all()
-    # print(pream[0].body)
+
     pream = formatLaTeX(pream)
-    
-    # default = formatLaTeX(default)
+
     return render_template('preamble.html',default = default, preamble=pream, form = form)
 
 
