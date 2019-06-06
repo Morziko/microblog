@@ -446,9 +446,9 @@ def preamble():
         flash(_('Your preamble is now live!'))
         return redirect(url_for('main.preamble'))
     user = User.query.filter_by(username = current_user.username).first()
-    print('def preamble: user.id ',user.id)
+    #print('def preamble: user.id ',user.id)
     default_pre_id = user.preamble_id
-    print(default_pre_id)
+    #print(default_pre_id)
     default = Preambul.query.filter_by(id = int(default_pre_id)).first()
 
     default = formatLaTeX([default])
