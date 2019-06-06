@@ -450,7 +450,8 @@ def preamble():
     default_pre_id = user.preamble_id
     #print(default_pre_id)
     default = Preambul.query.filter_by(id = int(default_pre_id)).first()
-
+    print('default preamble: ',default)
+    print('default body: ',default.body)
     default = formatLaTeX([default])
 
     pream = Preambul.query.all()
