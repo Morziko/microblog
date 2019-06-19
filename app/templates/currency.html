@@ -3,26 +3,33 @@
 {% block app_content %}
 <table class="table table-hover">
 	<tr>  
+		<h1 style="color:black; text-align:center; ">
+			<i>
 
-            {% autoescape false %}
-                {{ currency }}      
-            {% endautoescape %}   
-            <br>
+		            <span style="color:blue;">{{ price }}</span>
+		            <span style="color:green;">{{ cur1 }}</span> 
+		            =
+		            <span style="color:blue;">{{ res }}</span> 
+		            <span style="color:green;">{{ cur2 }}</span>       
 
-			{% if form %}
-				
-				<form method="POST" >
-				    {{ form.csrf_token }}
-				    {{ form.sel1 }}
-				    {{ form.sel2 }}
-				    <br>
-				    {{ form.price }} 
-				    <input type="submit" name="">
-				    
-				</form>
-			    <!--{{ wtf.quick_form(form) }}-->
+		    </i>
+        </h1>   
+        <br>
+
+		{% if form %}
+			
+			<!--<form method="POST" style="font-size:300%; text-align:center;" >
+			    	{{ form.csrf_token }}
+				{{ form.sel1 }}==>	{{ form.sel2}}
+			     
 			    <br>
-		    {% endif %}
+			    {{ form.price(size=30) }} 
+			    {{ form.submit	}}
+			    
+			</form>-->
+		    {{ wtf.quick_form(form) }}
+		    <br>
+	    {% endif %}
    </tr>
 </table>
 {% endblock %}

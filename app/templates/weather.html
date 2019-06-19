@@ -1,13 +1,35 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block app_content %}
-<table class="table table-hover">
-	<tr>  
-
+<div>
+    <table class="table table-hover">
+    	<tr>  
             {% autoescape false %}
-                {{ weather }}      
-            {% endautoescape %}   
+                <h1 style="color:black; text-align:center; "><i>City: {{ city }}</i></h1> <br>
+                
+                {% if sky == 'clear sky' %}
+                    <img src="{{url_for('static', filename='sun.jpg')}}" align="right"/><br>
+                {% elif sky == 'scattered clouds' or sky =='broken clouds' %}
+                    <img src="{{url_for('static', filename='clouds.jpg')}}" align="right"/><br>
+                {% elif sky == 'rain' or sky =='shower rain' or sky =='light rain' %}
+                    <img src="{{url_for('static', filename='rain.jpg')}}" align="right"/><br>
+                {% elif sky == 'snow' %}
+                    <img src="{{url_for('static', filename='snow.jpg')}}" align="right"/><br>
+                {% elif sky == 'few clouds' %}
+                    <img src="{{url_for('static', filename='sun-and-clouds.png')}}" align="right"/><br>
+                {% else %}
+                    <img src="{{ icon }}" /><br>
+                {% endif %}
 
-   </tr>
-</table>
+                <p style="color:orange;font-size:150%;">Temperature: {{ temp }} C<sup>0</sup></p><br>
+                <span style="color:blue;font-size:150%;">Sky: {{ sky }} </span><br>
+
+                
+
+                <span style="color:#59a680;font-size:150%;">Weather: {{ weat }}</span> <br>
+            
+            {% endautoescape %}    
+       </tr>
+    </table>
+</div>
 {% endblock %}
