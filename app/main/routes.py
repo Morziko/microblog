@@ -17,13 +17,10 @@ from sqlalchemy import create_engine, MetaData, Table, and_, or_
 from config import Config
 from app.formatText import *
 import requests
-
 import subprocess
 
 import os 
-
 from io import BytesIO
-
 import ast
 from re import search
 

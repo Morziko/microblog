@@ -13,13 +13,15 @@ class Config(object):
     
    
     #'postgres://xczgdypqwigfgo:99c0cf16659cbde35b7d62bcea57e3c971f91058ee92e7f2780eaff0aac31a5f@ec2-107-20-183-142.compute-1.amazonaws.com:5432/ddasc41j3hnp5v'
+
     # 'sqlite:///' + os.path.join(basedir, 'app.db')
 
-    
+
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-                'postgresql://yurii:11vivozu@localhost/MyPostgresQL'
+        'postgresql://yurii:11vivozu@localhost/MyPostgresQL'
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
 
@@ -31,15 +33,7 @@ class Config(object):
     MAIL_PASSWORD= '12vivozu'
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
     
-    """
-    DEBUG=True
-    MAIL_SERVER = os.environ.get('MAIL_SERVR')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    """
-    ADMINS = ['morziko2@gmail.com']
+    ADMINS = ['morziko2@gmail.com', 'morozov.yra029@gmail.com']
     
     POSTS_PER_PAGE = 20
     
