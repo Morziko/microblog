@@ -1,8 +1,8 @@
-"""for heroku try 1
+"""users table
 
-Revision ID: 2233501a1b16
+Revision ID: 4c30eadb7390
 Revises: 
-Create Date: 2019-04-11 17:08:00.026837
+Create Date: 2019-06-20 13:09:29.070484
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2233501a1b16'
+revision = '4c30eadb7390'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,6 +31,7 @@ def upgrade():
     sa.Column('about_me', sa.String(length=140), nullable=True),
     sa.Column('last_seen', sa.DateTime(), nullable=True),
     sa.Column('len_post', sa.Integer(), nullable=True),
+    sa.Column('preamble_id', sa.Integer(), nullable=True),
     sa.Column('last_message_read_time', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -55,6 +56,20 @@ def upgrade():
     sa.Column('followed_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['followed_id'], ['user.id'], ),
     sa.ForeignKeyConstraint(['follower_id'], ['user.id'], )
+    )
+    op.create_table('history_city',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('city', sa.String(length=40), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('history_currency',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('currency', sa.String(length=40), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('message',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -112,6 +127,8 @@ def downgrade():
     op.drop_table('notification')
     op.drop_index(op.f('ix_message_timestamp'), table_name='message')
     op.drop_table('message')
+    op.drop_table('history_currency')
+    op.drop_table('history_city')
     op.drop_table('followers')
     op.drop_table('currency')
     op.drop_table('city')
