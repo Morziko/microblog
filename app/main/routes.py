@@ -17,13 +17,9 @@ from sqlalchemy import create_engine, MetaData, Table, and_, or_
 from config import Config
 from app.formatText import *
 import requests
-
 import subprocess
-
 import os 
-
 from io import BytesIO
-
 import ast
 from re import search
 
@@ -81,6 +77,8 @@ def before_request():
         else:
             g.currency = 'EUR-UAH'
 
+
+        g.test = Test.query.filter_by(countTest = 1)
     g.locale = str(get_locale())
 
 
