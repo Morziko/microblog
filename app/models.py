@@ -21,14 +21,6 @@ followers = db.Table(
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
-#
-#
-#
-#
-#
-#
-#
-
 
 class Preambul(db.Model):
     id = db.Column(db.Integer, primary_key=True)
