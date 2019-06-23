@@ -76,9 +76,6 @@ def before_request():
             g.currency = us.currencies
         else:
             g.currency = 'EUR-UAH'
-
-
-        g.test = Test.query.filter_by(countTest = 1)
     g.locale = str(get_locale())
 
 

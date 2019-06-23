@@ -22,11 +22,6 @@ followers = db.Table(
 )
 
 
-class Test(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    countTest = db.Column(db.Integer, default = 123)
-
-
 class Preambul(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
