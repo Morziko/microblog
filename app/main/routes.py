@@ -494,24 +494,35 @@ def preference():
 
 
 
-# Show post
-@bp.route('/dpost/<post>')
+# Розгортає пост разом з файлом
+@bp.route('/dpost/<post>', methods=['GET', 'POST'])
 def post(post):
-    file = FileContent.query.filter_by(post_id = post).first()
-    post = Post.query.filter_by(id = post).first()
-    post = formatLaTeX([post])
-    print(file)
-    if file:
-        print('good, this post have file\n')
-        
-        return render_template('post.html' , post=post[0], file = file)
-    else:
-        print('this post dont have file\n')
-        
-        return render_template('post.html' , post=post[0])
+    form = CommentForm() # Форма для коментарів
+    print("post :" ,post, "; Type post: ",type(post))
+    if form.validate_on_submit(): # Якщо нажато кнопку з форми
+        language = guess_language(form.comment.data)
+        if language == 'UNKNOWN' or len(language) > 5:
+            language = ''
+        comment = Comment(body=form.comment.data, author=current_user,
+                    language=language, postId = Post.query.filter_by(id = post).first())
+        db.session.add(comment)
+        db.session.commit()
+
+        flash(_('Your comment is now live!'))
+        return redirect(url_for('main.post' , post = post))
+
+    comments = Comment.query.filter_by(post_id = post).all() # Всі коментарі до посту
+
+    file = FileContent.query.filter_by(post_id = post).first() # Знаходить файл прикріплений до поста
+    post = Post.query.filter_by(id = post).first() # Знаходить пост
+    post = formatLaTeX([post]) # Форматує пост функцією з бібліотеки
 
 
+    return render_template('post.html' , post=post[0], file = file, form = form, 
+                                comments = comments)    
 
+
+# Завантаження файлу прикріпленого до посту
 @bp.route('/download/<file>')
 def download(file):
     file = FileContent.query.filter_by(id = file).first()
@@ -537,7 +548,7 @@ def Show_message(post):
     #return render_template('post.html' , post=post[0])
 
 
-
+# Видалення конкретного посту
 @bp.route('/delete_post/<post>')
 def delete_post(post):
     post = Post.query.filter_by(id = post).first()
@@ -548,6 +559,22 @@ def delete_post(post):
         return user(current_user.username)
     else:
         return user(current_user.username)
+
+
+
+# Видалення конкретного коментаря
+@bp.route('/delete_comment/<comment>')
+def delete_comment(comment):
+    comment = Comment.query.filter_by(id = comment).first()
+    if current_user.username == comment.author.username:
+        db.session.delete(comment)
+        db.session.commit()
+        flash('Comment delete')
+        return index()
+
+    else:
+        return index()
+
     
 
 

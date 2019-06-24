@@ -20,7 +20,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://yurii:11vivozu@localhost/MyPostgresQL'
+        'postgresql://yurii:11vivozu@localhost/stuff'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
@@ -44,3 +44,20 @@ class Config(object):
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
     
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
+
+class ProductionConfig(Config):
+    DEBUG = False
+
+
+class StagingConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+
+
+class DevelopmentConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+
+
+class TestingConfig(Config):
+    TESTING = True

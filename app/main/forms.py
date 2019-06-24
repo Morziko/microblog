@@ -33,12 +33,17 @@ class Preamble(FlaskForm):
     submit = SubmitField(_l('Submit'))
 
 
+# Форма для постів
 class PostForm(FlaskForm):
     post = TextAreaField(_l('Say something'), validators=[DataRequired()])
     file = FileField(_l('File'))
     submit = SubmitField(_l('Submit')) 
-    
-    
+
+
+# Форма для коментарів
+class CommentForm(FlaskForm):
+    comment = TextAreaField(_l('Say comment'), validators=[DataRequired()])
+    submit = SubmitField(_l('Submit')) 
     
     
 

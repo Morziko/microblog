@@ -69,6 +69,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    comment = db.relationship('Comment', backref='author', lazy='dynamic')
     cities = db.relationship('City', backref='author', lazy='dynamic')
     historyCur = db.relationship('HistoryCurrency', backref='author', lazy='dynamic')
     historyCity = db.relationship('HistoryCity', backref='author', lazy='dynamic')
@@ -224,6 +225,8 @@ class FileContent(db.Model):
 
     def __repr__(self):
         return '<Name {}>'.format(self.name)
+
+
 """
 class Preferences(db.Model):
     __tablename__='Preferences'
@@ -240,12 +243,13 @@ class Preferences(db.Model):
 class Post(SearchableMixin, db.Model):
     __searchable__ = ['body']
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
+    body = db.Column(db.String(240))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     language = db.Column(db.String(5))
     # posts = db.relationship('Post', backref='author', lazy='dynamic')
     files = db.relationship('FileContent',backref='postId', lazy='dynamic')
+    comment = db.relationship('Comment', backref='postId', lazy='dynamic')
     # preference = db.relationship('Preferences',backref='preferPost', lazy='dynamic')
     """
                 filename = db.Column(db.String(140))
@@ -256,6 +260,23 @@ class Post(SearchableMixin, db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+
+
+class Comment(db.Model):
+    __searchable__ = ['body']
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    language = db.Column(db.String(5))
+
+    def __repr__(self):
+        return '<Comment {}>'.format(self.body)
+
+
 
 
     
@@ -271,6 +292,9 @@ class Message(db.Model):
 
     def __repr__(self):
         return '<Message {}>'.format(self.body)
+
+
+
 
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
