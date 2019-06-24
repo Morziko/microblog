@@ -13,7 +13,7 @@ from flask import g
 
 from app.models import *
 from sqlalchemy import *
-from sqlalchemy import create_engine, MetaData, Table, and_, or_
+from sqlalchemy import create_engine, MetaData, Table, and_, or_, text
 from config import Config
 from app.formatText import *
 import requests
@@ -588,10 +588,11 @@ def searchs():
     search = str(form.q.data)
     print('Search',search)
     filterpost = Post.query.filter(Post.body.like('%{}%'.format(search))).all()
-    
+    # Підключення двигуна 
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     connection = engine.connect()
     
+    # Складання стрінгу для надсилання до engine
     k=0
     sear = ''
     search = search.split(' ')
@@ -599,14 +600,18 @@ def searchs():
         for word in search:
             k += 1
             if k != len(search):
-                sear += "body LIKE '%{}%' OR ".format(word)
+                sear += "lower(body) LIKE '%{}%' OR ".format(word)
             else:
-                sear += "body LIKE '%{}%'".format(word)
-            
-    result = connection.execute("SELECT * FROM Post WHERE {};".format(sear))
+                sear += "lower(body) LIKE '%{}%'".format(word)
+
+    t = text("SELECT * FROM Post WHERE {};".format(sear))
+    result = connection.execute(t , isolation_level="READ COMMITTED")
+
+
     list = []
     for row in result:
         list.append(int(row.id))
+
     pos = Post.query.filter(Post.id.in_(list)).all()
     leng = User.query.filter_by(username = current_user.username).first()
     len_post = leng.len_post
