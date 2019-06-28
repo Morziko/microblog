@@ -39,15 +39,28 @@
                     	<li><a href="{{ url_for('auth.login') }}">{{ _('Login') }}</a></li>
                 	{% else %} 
 	                    <li>
-	                        <a href="{{ url_for('main.messages') }}">{{ _('Messages') }}
-	                            {% set new_messages = current_user.new_messages() %}
-	                            <span id="message_count" class="badge"
-	                                  style="visibility: {% if new_messages %}visible
-	                                                     {% else %}hidden{% endif %};">
-	                                {{ new_messages }}
-	                            </span>
-	                        </a>
+	                        
 	                    </li>
+
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Messages</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a href="{{ url_for('main.messages') }}">{{ _('Messages') }}
+                                    {% set new_messages = current_user.new_messages() %}
+                                        <span id="message_count" class="badge"
+                                              style="visibility: {% if new_messages %}visible
+                                                                 {% else %}hidden{% endif %};">
+                                            {{ new_messages }}
+                                        </span>
+                                </a><br>
+                                <a href="{{ url_for('main.messages') }}">{{ _('Send message') }}</a><br>
+                                <a href="{{ url_for('main.sent_messages') }}">{{ _('Sent messages') }}</a><br>
+
+                            </div>
+                        </li>
+
+
 
 
                         <li class="nav-item dropdown">

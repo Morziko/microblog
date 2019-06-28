@@ -10,13 +10,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 class Config(object):
-    
-   
-    #'postgres://xczgdypqwigfgo:99c0cf16659cbde35b7d62bcea57e3c971f91058ee92e7f2780eaff0aac31a5f@ec2-107-20-183-142.compute-1.amazonaws.com:5432/ddasc41j3hnp5v'
-
-    # 'sqlite:///' + os.path.join(basedir, 'app.db')
-
-
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
@@ -37,7 +30,7 @@ class Config(object):
     
     POSTS_PER_PAGE = 20
     
-    LANGUAGES = ['en', 'ukr' ]
+    LANGUAGES = ['ukr', 'en']
     
     # ELASTICSEARCH_URL = 'http://localhost:9200'
     

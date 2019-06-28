@@ -735,6 +735,16 @@ def user_popup(username):
     return render_template('user_popup.html', user=user)
 
 
+@bp.route('/sent_messages')
+@login_required # True якщо користувач аутентифікований
+def sent_messages():
+    sent = Message.query.filter_by(sender_id = current_user.id).all()
+    user = User.query.filter_by(id = current_user.id).first()
+    leng = user.len_post
+    return render_template('messages.html', messages=sent,
+                            len_post = leng, messageTrue = 1)
+
+
 
 @bp.route('/send_message/<recipient>', methods=['GET', 'POST'])
 @login_required
@@ -760,7 +770,9 @@ def send_message(recipient):
                            form=form, recipient=recipient)
 
 
-    
+
+
+
 @bp.route('/messages')
 @login_required
 def messages():
@@ -775,9 +787,8 @@ def messages():
         if messages.has_next else None
     prev_url = url_for('main.messages', page=messages.prev_num) \
         if messages.has_prev else None
-    user = User.query.filter_by(username = current_user.username).first()
+    user = User.query.filter_by(id = current_user.id).first()
     leng = user.len_post
-    print(leng)
     return render_template('messages.html', messages=messages.items,
                            next_url=next_url, prev_url=prev_url, len_post = leng, messageTrue = 1)
   
