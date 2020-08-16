@@ -13,7 +13,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://yurii:11vivozu@localhost/stuff'
+        'postgresql://yurii:******@localhost/stuff'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -22,11 +22,11 @@ class Config(object):
     MAIL_SERVER='smtp.googlemail.com'
     MAIL_PORT=465
     MAIL_USE_SSL=1
-    MAIL_USERNAME = 'morozov.ura029@gmail.com'
-    MAIL_PASSWORD= '12vivozu'
+    MAIL_USERNAME = '***********029@gmail.com'
+    MAIL_PASSWORD= '******'
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
 
-    ADMINS = ['morziko2@gmail.com', 'morozov.yra029@gmail.com']
+    ADMINS = [*******2@gmail.com', '**********029@gmail.com']
 
     POSTS_PER_PAGE = 20
 
